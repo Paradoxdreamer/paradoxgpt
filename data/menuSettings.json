@@ -1,0 +1,22 @@
+{
+  "botName": "ParadoxGPT",
+  "bio": "Crafted from silence and sunless skies.",
+  "handles": {
+    "whatsapp": "",
+    "telegram": "",
+    "github": "https://github.com/Paradoxdreamer/paradoxgpt",
+    "instagram": "",
+    "twitter": "",
+    "youtube": "",
+    "tiktok": ""
+  },
+  "channel": {
+    "name": "ParadoxGPT Channel",
+    "url": "",
+    "id": ""
+  },
+  "botPicUrl": "https://files.catbox.moe/vx6rwh.jpg",
+  "footer": "Crafted from silence and sunless skies\nAsk me anything, command me everything\nbut Beware… even dreams can bite",
+  "ownerName": "Paradox Dreamer",
+  "version": "2.0.0"
+}
