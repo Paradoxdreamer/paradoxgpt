@@ -1,4 +1,4 @@
-const { getMode, setMode } = require("../ai/gemini");
+const { getMode, setMode } = require("../ai/omega");
 
 module.exports = {
   name: "mode",
@@ -17,8 +17,8 @@ module.exports = {
     await setMode(input);
     const vibe =
       input === "chaotic"
-        ? "Brace yourself. The chaos is awake 😈"
-        : "Switching back to chill… for now 🧘‍♂️";
+        ? "Brace yourself. The chaos is awake."
+        : "Switching back to chill… for now.";
 
     await m.reply(`ParadoxGPT is now in *${input.toUpperCase()} MODE*.\n${vibe}`);
   },

@@ -1,4 +1,4 @@
-const { askGemini } = require("../ai/gemini");
+const { askGemini } = require("../ai/omega");
 
 module.exports = {
   name: "ask",

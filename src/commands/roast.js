@@ -1,4 +1,4 @@
-const { askGemini } = require("../ai/gemini");
+const { askGemini } = require("../ai/omega");
 
 module.exports = {
   name: "roast",
@@ -13,6 +13,6 @@ module.exports = {
     const prompt = `Write a witty, creative, slightly savage roast aimed at someone named ${name}. Keep it clever and humorous, not just mean. One short paragraph.`;
 
     const roast = await askGemini(prompt, { mode: "chaotic" });
-    await m.reply(`@${name} 🔥\n\n${roast}`, { mentions: [target] });
+    await m.reply(`@${name}\n\n${roast}`, { mentions: [target] });
   },
 };
