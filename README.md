@@ -1,132 +1,71 @@
 # ParadoxGPT v2
 
-A clean, modern rebuild of ParadoxGPT — personality-driven WhatsApp AI bot.
+Personality-driven WhatsApp AI bot with **web pairing codes** (no QR), Gemini, hot-reload, and advanced tools.
 
-**No QR codes.** Connect with an **8-digit pairing code** from the web dashboard.
+**Repo:** https://github.com/Paradoxdreamer/paradoxgpt
 
-Stack: [Baileys](https://github.com/WhiskeySockets/Baileys) · Google Gemini · Express
-
----
-
-## Features
-
-- Web pairing dashboard (phone number → pairing code)
-- Dual personality: `normal` / `chaotic`
-- Gemini AI replies (mention bot or end with `?`)
-- Modular commands + **hot-reload** (edit commands without restart)
-- Anti-spam, permanent ban, warn system
-- Welcome / leave messages
-- Anti-link
-- View-once breaker (`.see`)
-- Sticker converter, tagall, roast, profile, etc.
-- Docker-ready
-
----
-
-## Quick Start
-
-### 1. Configure
+## Quick start
 
 ```bash
+git clone https://github.com/Paradoxdreamer/paradoxgpt.git
+cd paradoxgpt
 cp .env.example .env
+# set OWNER_NUMBER and GEMINI_API_KEY
+npm install && npm start
+# open http://localhost:3000 for pairing code
 ```
 
-Edit `.env`:
+Docker: `docker compose up -d --build`
 
-```env
-BOT_NAME=ParadoxGPT
-OWNER_NUMBER=2348012345678
-GEMINI_API_KEY=your_key_here
-WEB_PORT=3000
-COMMAND_PREFIX=.
-```
+## Advanced commands
 
-### 2. Run (Node)
-
-```bash
-npm install
-npm start
-```
-
-Open **http://localhost:3000**
-
-### 3. Or run with Docker
-
-```bash
-docker compose up -d --build
-```
-
-Dashboard still at **http://localhost:3000**
-
-### 4. Link WhatsApp
-
-1. Enter phone number (country code + number, no `+`)
-2. Generate code
-3. Phone → WhatsApp → Linked Devices → **Link with phone number instead**
-4. Type the code → connected
-
----
-
-## Commands
-
+### Broadcast & channels (owner)
 | Command | Description |
 |---------|-------------|
-| `.menu` | Show commands |
-| `.ping` | Latency |
-| `.mode` | `normal` / `chaotic` |
-| `.ask` | Ask Gemini |
-| `.roast @user` | AI roast |
-| `.s` | Reply to media → sticker |
-| `.see` | Reveal view-once media |
-| `.tagall` | Mention everyone |
-| `.profile` | View profile / XP |
-| `.welcome on/off` | Toggle welcome |
-| `.setwelcome` | Custom welcome (`@user` required) |
-| `.leave on/off` | Toggle leave |
-| `.setleave` | Custom leave |
+| `.broadcast <msg>` | Send to all groups |
+| `.channel set [jid]` | Set default channel/group |
+| `.channel post <msg>` | Post once to default channel |
+| `.channel autopost on/off` | Toggle scheduled auto-posts |
+| `.channel list` | List saved channels |
+| `.listgc` | List all groups |
+| `.join <invite-link>` | Join a group |
+| `.leavegc` | Leave current/specified group |
+
+### Web & utilities
+| Command | Description |
+|---------|-------------|
+| `.search <query>` | DuckDuckGo web search |
+| `.news <topic>` | Topic / news links |
+| `.weather <city>` | Live weather (wttr.in) |
+| `.translate <lang> <text>` | Translate (MyMemory) |
+| `.qr <text>` | Generate QR code image |
+| `.remind 10m <msg>` | In-chat reminder |
+| `.poll Q \| A \| B \| C` | WhatsApp poll |
+
+### Group admin (bot must be admin)
+| Command | Description |
+|---------|-------------|
+| `.hidetag <msg>` | Mention all silently |
+| `.tagall` | Mention all |
+| `.groupinfo` | Group metadata |
+| `.linkgc` | Invite link |
+| `.kick @user` | Remove member |
+| `.promote` / `.demote` | Admin controls |
+| `.setname` / `.setdesc` | Edit group |
 | `.antilink on/off` | Auto-delete links |
-| `.warn @user` | Warn (3 → ban) |
-| `.resetwarn @user` | Reset warns (owner) |
-| `.ban` / `.unban` | Ban system (owner) |
+| `.warn` / `.welcome` / `.leave` | Moderation |
 
----
+### Media & AI
+| Command | Description |
+|---------|-------------|
+| `.s` | Media → sticker |
+| `.toimg` | Sticker → image |
+| `.see` | Reveal view-once |
+| `.ask` / `.roast` / `.mode` | Gemini |
+| `.afk [reason]` | AFK + auto-notify |
 
-## Project Structure
-
-```
-paradoxgpt/
-├── src/
-│   ├── index.js
-│   ├── config.js
-│   ├── bot/          # connection, handler, serializer
-│   ├── ai/           # Gemini + modes
-│   ├── commands/     # one file per command (hot-reloaded)
-│   └── web/          # pairing dashboard
-├── data/             # session + JSON stores
-├── Dockerfile
-├── docker-compose.yml
-└── package.json
-```
-
----
-
-## Hot-reload
-
-Commands in `src/commands/` are reloaded every 5 seconds.  
-Edit a command file → save → it is picked up automatically (no restart needed for command logic).
-
----
-
-## Docker notes
-
-- Session and data persist in `./data`
-- Put secrets only in `.env` (never commit it)
-- Rebuild after dependency changes: `docker compose up -d --build`
-
----
+Hot-reload is on: edit files in `src/commands/` and they load within ~5s.
 
 ## License
 
 MIT
-
-**ParadoxGPT v2** — pairing-code first, clean architecture, ready to extend.
