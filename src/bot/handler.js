@@ -64,6 +64,13 @@ async function handleMessage(sock, rawMsg) {
 
   if (await isPermanentlyBanned(m.sender) || isTempBanned(m.sender)) return;
 
+  try {
+    const afk = require("../commands/afk");
+    if (typeof afk.checkAfkMention === "function") {
+      await afk.checkAfkMention(sock, m);
+    }
+  } catch (_) {}
+
   const now = Date.now();
   const last = cooldowns.get(m.sender) || 0;
   if (now - last < config.cooldownMs) {

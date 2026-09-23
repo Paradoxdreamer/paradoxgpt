@@ -1,8 +1,7 @@
 /**
  * ParadoxGPT v2
- * Clean architecture - Web pairing codes - Gemini personality
  */
-const { startBot } = require("./bot/connection");
+const { startBot, getSocket } = require("./bot/connection");
 const { loadCommands, startHotReload } = require("./bot/handler");
 const { startWebServer } = require("./web/server");
 const config = require("./config");
@@ -15,9 +14,18 @@ async function main() {
   await fs.ensureDir(config.sessionDir);
 
   startWebServer();
+
   await loadCommands();
   startHotReload(5000);
+
   await startBot();
+
+  try {
+    const { startAutoPost } = require("./services/autopost");
+    startAutoPost(getSocket);
+  } catch (err) {
+    console.warn("Autopost service not started:", err.message);
+  }
 
   console.log(`Prefix: ${config.prefix}`);
   console.log(`Owner : ${config.ownerNumber || "(not set)"}`);
