@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs-extra");
 const { serialize } = require("./serializer");
 const config = require("../config");
-const { askGemini } = require("../ai/gemini");
+const { askGemini } = require("../ai/omega");
 
 const cooldowns = new Map();
 const spamCounter = new Map();
@@ -21,24 +21,44 @@ async function isPermanentlyBanned(jid) {
 }
 
 async function loadCommands() {
-  const dir = path.join(__dirname, "../commands");
-  await fs.ensureDir(dir);
-  const files = (await fs.readdir(dir)).filter((f) => f.endsWith(".js"));
+  const root = path.join(__dirname, "../commands");
+  await fs.ensureDir(root);
 
+  async function walk(dir) {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const out = [];
+    for (const e of entries) {
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) out.push(...(await walk(full)));
+      else if (e.isFile() && e.name.endsWith(".js")) out.push(full);
+    }
+    return out;
+  }
+
+  const files = await walk(root);
   const loaded = {};
+
   for (const file of files) {
     try {
-      delete require.cache[require.resolve(path.join(dir, file))];
-      const cmd = require(path.join(dir, file));
+      delete require.cache[require.resolve(file)];
+      const cmd = require(file);
       if (cmd?.name) {
+        const cat = path.basename(path.dirname(file));
+        if (cat !== "commands") cmd.category = cmd.category || cat;
         loaded[cmd.name] = cmd;
       }
     } catch (err) {
-      console.error(`Failed to load command ${file}:`, err.message);
+      console.error(`Failed to load command ${path.relative(root, file)}:`, err.message);
     }
   }
+
   commands = loaded;
-  console.log(`Loaded ${Object.keys(commands).length} commands`);
+  const byCat = {};
+  for (const c of Object.values(loaded)) {
+    const k = c.category || "misc";
+    byCat[k] = (byCat[k] || 0) + 1;
+  }
+  console.log(`Loaded ${Object.keys(commands).length} commands:`, byCat);
   return commands;
 }
 
@@ -65,7 +85,7 @@ async function handleMessage(sock, rawMsg) {
   if (await isPermanentlyBanned(m.sender) || isTempBanned(m.sender)) return;
 
   try {
-    const afk = require("../commands/afk");
+    const afk = require("../commands/general/afk");
     if (typeof afk.checkAfkMention === "function") {
       await afk.checkAfkMention(sock, m);
     }
@@ -90,7 +110,7 @@ async function handleMessage(sock, rawMsg) {
 
   if (m.isGroup && m.body) {
     try {
-      const antilink = require("../commands/antilink");
+      const antilink = require("../commands/anti/antilink");
       if (typeof antilink.isAntiLinkEnabled === "function") {
         const enabled = await antilink.isAntiLinkEnabled(m.chat);
         if (enabled) {

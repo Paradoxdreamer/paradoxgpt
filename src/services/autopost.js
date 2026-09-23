@@ -1,4 +1,4 @@
-const { loadChannels, saveChannels } = require("../commands/channel");
+const { loadChannels, saveChannels } = require("../commands/auto/channel");
 const config = require("../config");
 
 const INTERVAL_MS = 6 * 60 * 60 * 1000;
