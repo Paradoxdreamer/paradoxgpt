@@ -1,0 +1,251 @@
+:root {
+  --bg: #0a0a0f;
+  --card: #12121a;
+  --border: #1e1e2e;
+  --accent: #7c5cff;
+  --accent2: #ff4d6d;
+  --text: #e8e8f0;
+  --muted: #8888a0;
+  --success: #2dd4bf;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --mono: "JetBrains Mono", monospace;
+  --sans: "Outfit", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124, 92, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 92, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 3rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.logo span {
+  color: var(--accent);
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-top: 0.35rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.85rem;
+  color: var(--text);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge.disconnected {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--danger);
+}
+
+.badge.connecting {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--warning);
+}
+
+.badge.open {
+  background: rgba(45, 212, 191, 0.15);
+  color: var(--success);
+}
+
+.detail {
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.1rem;
+}
+
+.hint code {
+  font-family: var(--mono);
+  background: #1a1a28;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+form {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+input[type="tel"] {
+  flex: 1;
+  min-width: 180px;
+  background: #0e0e16;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input[type="tel"]:focus {
+  border-color: var(--accent);
+}
+
+button {
+  background: linear-gradient(135deg, var(--accent), #9b7bff);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.code-box {
+  margin-top: 1.4rem;
+  text-align: center;
+  padding: 1.2rem;
+  background: #0e0e16;
+  border-radius: 12px;
+  border: 1px dashed var(--accent);
+}
+
+.code-box p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.code {
+  font-family: var(--mono);
+  font-size: 2.4rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  margin: 0.8rem 0;
+  user-select: all;
+}
+
+.steps {
+  font-size: 0.85rem !important;
+  line-height: 1.5;
+}
+
+.error {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 10px;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.info-card ol {
+  padding-left: 1.2rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.info-card li {
+  margin-bottom: 0.45rem;
+}
+
+.info-card strong {
+  color: var(--text);
+}
+
+footer {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 2rem;
+  }
+  .code {
+    font-size: 1.8rem;
+    letter-spacing: 0.15em;
+  }
+}
