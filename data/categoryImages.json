@@ -1,10 +1,10 @@
 {
-  "general": "https://files.catbox.moe/vx6rwh.jpg",
-  "ai": "https://files.catbox.moe/vx6rwh.jpg",
-  "tools": "https://files.catbox.moe/vx6rwh.jpg",
-  "media": "https://files.catbox.moe/vx6rwh.jpg",
-  "group": "https://files.catbox.moe/vx6rwh.jpg",
-  "auto": "https://files.catbox.moe/vx6rwh.jpg",
-  "anti": "https://files.catbox.moe/vx6rwh.jpg",
-  "owner": "https://files.catbox.moe/vx6rwh.jpg"
+  "general": "assets/gallery/portrait.jpg",
+  "ai": "assets/gallery/solar.jpg",
+  "tools": "assets/gallery/conductor.jpg",
+  "media": "assets/gallery/wings.jpg",
+  "group": "assets/gallery/throne.jpg",
+  "auto": "assets/gallery/roses.jpg",
+  "anti": "assets/gallery/hood.jpg",
+  "owner": "assets/gallery/lilies.jpg"
 }
