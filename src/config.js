@@ -5,6 +5,12 @@ const config = {
   botName: process.env.BOT_NAME || "ParadoxGPT",
   ownerNumber: (process.env.OWNER_NUMBER || "").replace(/\D/g, ""),
   geminiApiKey: process.env.GEMINI_API_KEY || "",
+  omegaPrimaryUrl:
+    process.env.OMEGA_PRIMARY_URL ||
+    "https://omegatech-api.dixonomega.tech/api/ai/Qwen-Claude-Haiku",
+  omegaFallbackUrl:
+    process.env.OMEGA_FALLBACK_URL ||
+    "https://omegatech-api.dixonomega.tech/api/ai/Gpt-4-mini",
   prefix: process.env.COMMAND_PREFIX || ".",
   webPort: parseInt(process.env.WEB_PORT || "3000", 10),
   webHost: process.env.WEB_HOST || "0.0.0.0",
@@ -14,9 +20,5 @@ const config = {
   spamLimit: 6,
   banDurationMs: 60 * 60 * 1000,
 };
-
-if (!config.geminiApiKey) {
-  console.warn("GEMINI_API_KEY is missing. AI features will be disabled.");
-}
 
 module.exports = config;
