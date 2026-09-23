@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParadoxGPT — Pairing Dashboard</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="container">
+    <header>
+      <div class="logo">Paradox<span>GPT</span></div>
+      <p class="tagline">Whisper in your Wi-Fi · Pairing Code Edition</p>
+    </header>
+
+    <section class="card status-card">
+      <h2>Connection Status</h2>
+      <div id="statusBadge" class="badge disconnected">Disconnected</div>
+      <p id="statusDetail" class="detail">Waiting for pairing…</p>
+    </section>
+
+    <section class="card pair-card" id="pairSection">
+      <h2>Get Pairing Code</h2>
+      <p class="hint">Enter your WhatsApp number with country code (no + or spaces).<br>Example: <code>2348012345678</code></p>
+      
+      <form id="pairForm">
+        <input type="tel" id="phone" placeholder="Country code + number" required autocomplete="tel" />
+        <button type="submit" id="pairBtn">Generate Code</button>
+      </form>
+
+      <div id="codeBox" class="code-box hidden">
+        <p>Enter this code in WhatsApp:</p>
+        <div class="code" id="pairingCode">----</div>
+        <p class="steps">
+          WhatsApp → Linked Devices → Link a Device → <strong>Link with phone number instead</strong>
+        </p>
+      </div>
+
+      <div id="errorBox" class="error hidden"></div>
+    </section>
+
+    <section class="card info-card">
+      <h2>How it works</h2>
+      <ol>
+        <li>Enter your phone number above and generate a pairing code.</li>
+        <li>On your phone open WhatsApp → <em>Linked Devices</em>.</li>
+        <li>Choose <strong>“Link with phone number instead”</strong>.</li>
+        <li>Type the 8-character code shown here.</li>
+        <li>Bot connects automatically. No QR scanning required.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>ParadoxGPT v2 · Clean architecture · Gemini powered</span>
+    </footer>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
