@@ -1,0 +1,3 @@
+{
+  "currentMode": "normal"
+}

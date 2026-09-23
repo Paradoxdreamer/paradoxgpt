@@ -1,0 +1,14 @@
+services:
+  paradoxgpt:
+    build: .
+    container_name: paradoxgpt
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    environment:
+      - WEB_HOST=0.0.0.0
+      - WEB_PORT=3000
