@@ -1,4 +1,4 @@
-This is the full read me <p align="center">
+<p align="center">
   <img src="assets/gallery/IMG_7776.jpeg" width="420" alt="ParadoxGPT — Solar Core"/>
 </p>
 
