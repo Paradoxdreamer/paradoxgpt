@@ -19,6 +19,11 @@ const config = {
   cooldownMs: 2500,
   spamLimit: 6,
   banDurationMs: 60 * 60 * 1000,
+  omdbApiKey: process.env.OMDB_API_KEY || "4a3b711b",
+  spotify: {
+    clientId: process.env.SPOTIFY_CLIENT_ID || "",
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET || "",
+  },
 };
 
 module.exports = config;
