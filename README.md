@@ -295,14 +295,30 @@ Hot-reload walks category folders every few seconds.
 
 ## License
 
-MIT · [Paradoxdreamer](https://github.com/Paradoxdreamer)
-
 <p align="center">
-  <img src="assets/gallery/IMG_7776.jpeg" width="160" alt=""/>
-  <img src="assets/gallery/IMG_7538.jpeg" width="160" alt=""/>
-  <img src="assets/gallery/IMG_7548.jpeg" width="160" alt=""/>
+  <img src="assets/gallery/IMG_7776.jpeg" width="180" alt="Paradox — Gallery"/>
+  <img src="assets/gallery/IMG_7538.jpeg" width="180" alt="Paradox — Gallery"/>
+  <img src="assets/gallery/IMG_7548.jpeg" width="180" alt="Paradox — Gallery"/>
 </p>
-
 <p align="center">
-  <sub>Ask me anything, command me everything — but beware… even dreams can bite.</sub>
+  <strong>PARADOX · DREAMS INTO SYSTEMS</strong><br>
+  <sub>Software Engineer · Builder · Systems Thinker · Perpetual Experiment</sub>
+</p>
+<p align="center">
+  <i>“Ask me anything. Command me everything.<br>
+  Just remember — even dreams can bite.”</i>
+</p>
+<p align="center">
+  <a href="https://github.com/Paradoxdreamer">GitHub</a>
+  ·
+  <a href="https://github.com/Paradoxdreamer?tab=repositories">Projects</a>
+  ·
+  <a href="https://github.com/Paradoxdreamer?tab=stars">Stars</a>
+</p>
+<p align="center">
+  ─────────────────────────────
+</p>
+<p align="center">
+  <sub>MIT Licensed · © Paradoxdreamer</sub><br>
+  <sub>Built with curiosity. Refined through failure. Shipped anyway.</sub>
 </p>
