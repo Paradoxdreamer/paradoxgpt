@@ -46,6 +46,11 @@ async function loadCommands() {
         const cat = path.basename(path.dirname(file));
         if (cat !== "commands") cmd.category = cmd.category || cat;
         loaded[cmd.name] = cmd;
+        const aliases = cmd.aliases || cmd.alias || [];
+        const list = Array.isArray(aliases) ? aliases : [aliases];
+        for (const a of list) {
+          if (a && typeof a === "string") loaded[a.toLowerCase()] = cmd;
+        }
       }
     } catch (err) {
       console.error(`Failed to load command ${path.relative(root, file)}:`, err.message);
@@ -82,7 +87,7 @@ async function handleMessage(sock, rawMsg) {
   const m = serialize(rawMsg, sock);
   if (!m) return;
 
-  if (await isPermanentlyBanned(m.sender) || isTempBanned(m.sender)) return;
+  if ((await isPermanentlyBanned(m.sender)) || isTempBanned(m.sender)) return;
 
   try {
     const afk = require("../commands/general/afk");
@@ -99,7 +104,7 @@ async function handleMessage(sock, rawMsg) {
     if (count >= config.spamLimit) {
       tempBans.set(m.sender, now + config.banDurationMs);
       spamCounter.set(m.sender, 0);
-      await m.reply(`@${m.sender.split("@")[0]} auto-muted for spamming.`, {
+      await m.reply(`🚫 @${m.sender.split("@")[0]} auto-muted for spamming.`, {
         mentions: [m.sender],
       });
     }
@@ -114,10 +119,11 @@ async function handleMessage(sock, rawMsg) {
       if (typeof antilink.isAntiLinkEnabled === "function") {
         const enabled = await antilink.isAntiLinkEnabled(m.chat);
         if (enabled) {
-          const linkRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)|(chat\.whatsapp\.com\/[^\s]+)/gi;
+          const linkRegex =
+            /(https?:\/\/[^\s]+)|(www\.[^\s]+)|(chat\.whatsapp\.com\/[^\s]+)/gi;
           if (linkRegex.test(m.body) && !isOwner(m.sender)) {
             await sock.sendMessage(m.chat, { delete: m.key });
-            await m.reply("Link removed by ParadoxGPT anti-link.");
+            await m.reply("🔗 Link removed by ParadoxGPT anti-link.");
             return;
           }
         }
@@ -129,7 +135,7 @@ async function handleMessage(sock, rawMsg) {
     const cmd = commands[m.command];
 
     if (cmd.ownerOnly && !isOwner(m.sender)) {
-      return m.reply("Only the Paradox Master can use this.");
+      return m.reply("🚫 Only the Paradox Master can use this.");
     }
 
     if (cmd.groupOnly && !m.isGroup) {
@@ -137,7 +143,13 @@ async function handleMessage(sock, rawMsg) {
     }
 
     try {
-      await cmd.execute({ sock, m, args: m.args, commands, isOwner: isOwner(m.sender) });
+      await cmd.execute({
+        sock,
+        m,
+        args: m.args,
+        commands,
+        isOwner: isOwner(m.sender),
+      });
     } catch (err) {
       console.error(`Command ${m.command} error:`, err);
       await m.reply("Something went wrong while executing that command.");
@@ -145,7 +157,9 @@ async function handleMessage(sock, rawMsg) {
     return;
   }
 
-  const mentionedBot = m.mentionedJid?.some((j) => j.includes(sock.user?.id?.split(":")[0]));
+  const mentionedBot = m.mentionedJid?.some((j) =>
+    j.includes(sock.user?.id?.split(":")[0])
+  );
   const isQuestion = m.body.trim().endsWith("?");
 
   if ((mentionedBot || isQuestion) && m.body.length > 2) {
