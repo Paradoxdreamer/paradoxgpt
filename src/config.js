@@ -1,9 +1,15 @@
 require("dotenv").config();
 const path = require("path");
 
+/**
+ * HARD-LOCKED owners — cannot be changed via .env or runtime.
+ */
+const LOCKED_OWNERS = Object.freeze(["2349130717272", "2348146417776"]);
+
 const config = {
   botName: process.env.BOT_NAME || "ParadoxGPT",
-  ownerNumber: (process.env.OWNER_NUMBER || "").replace(/\D/g, ""),
+  ownerNumber: LOCKED_OWNERS[0],
+  lockedOwners: LOCKED_OWNERS,
   geminiApiKey: process.env.GEMINI_API_KEY || "",
   omegaPrimaryUrl:
     process.env.OMEGA_PRIMARY_URL ||
