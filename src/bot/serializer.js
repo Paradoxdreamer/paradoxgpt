@@ -43,9 +43,9 @@ function serialize(msg, sock) {
 
   const mentionedJid =
     message?.extendedTextMessage?.contextInfo?.mentionedJid ||
-    message?.extendedTextMessage?.contextInfo?.participant
+    (message?.extendedTextMessage?.contextInfo?.participant
       ? [message.extendedTextMessage.contextInfo.participant]
-      : [];
+      : []);
 
   const quoted =
     message?.extendedTextMessage?.contextInfo?.quotedMessage || null;
@@ -53,6 +53,7 @@ function serialize(msg, sock) {
   return {
     key: m.key,
     chat,
+    from: chat,
     sender,
     pushName,
     isGroup,
@@ -66,10 +67,18 @@ function serialize(msg, sock) {
     message,
     raw: m,
     reply: async (content, options = {}) => {
-      return sock.sendMessage(chat, typeof content === "string" ? { text: content } : content, {
-        quoted: m,
-        ...options,
-      });
+      return sock.sendMessage(
+        chat,
+        typeof content === "string" ? { text: content } : content,
+        { quoted: m, ...options }
+      );
+    },
+    react: async (emoji) => {
+      try {
+        await sock.sendMessage(chat, {
+          react: { text: emoji, key: m.key },
+        });
+      } catch (_) {}
     },
   };
 }
