@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/gallery/solar.jpg" width="420" alt="ParadoxGPT"/>
+  <img src="assets/gallery/IMG_7776.jpeg" width="420" alt="ParadoxGPT"/>
 </p>
 
 <h1 align="center">ParadoxGPT</h1>
@@ -37,11 +37,11 @@ ParadoxGPT is a rebuilt, production-minded WhatsApp bot:
 ---
 
 <p align="center">
-  <img src="assets/gallery/portrait.jpg" width="180" alt=""/>
+  <img src="assets/gallery/IMG_7554.jpeg" width="180" alt=""/>
   &nbsp;
-  <img src="assets/gallery/hood.jpg" width="180" alt=""/>
+  <img src="assets/gallery/IMG_7529.jpeg" width="180" alt=""/>
   &nbsp;
-  <img src="assets/gallery/wings.jpg" width="180" alt=""/>
+  <img src="assets/gallery/IMG_7528.jpeg" width="180" alt=""/>
 </p>
 
 ## Quick start
@@ -90,34 +90,34 @@ Customize without editing code:
 ```text
 .setmenu name ParadoxGPT
 .setmenu bio Crafted from silence and sunless skies.
-.setmenu pic assets/gallery/solar.jpg
+.setmenu pic assets/gallery/IMG_7776.jpeg
 .setmenu channel https://whatsapp.com/channel/XXXX
 .setmenu handle github https://github.com/Paradoxdreamer
-.setmenu catimg ai assets/gallery/solar.jpg
+.setmenu catimg ai assets/gallery/IMG_7776.jpeg
 .setmenu show
 ```
 
-Gallery art lives in `assets/gallery/` and maps to categories:
+### Gallery → category map
 
-| Category | Art |
-|----------|-----|
-| general | portrait |
-| ai | solar |
-| tools | conductor |
-| media | wings |
-| group | throne |
-| auto | roses |
-| anti | hood |
-| owner | lilies |
+| Category | File |
+|----------|------|
+| general | `IMG_7554.jpeg` |
+| ai | `IMG_7776.jpeg` |
+| tools | `IMG_7538.jpeg` |
+| media | `IMG_7528.jpeg` |
+| group | `IMG_7551.jpeg` |
+| auto | `IMG_7527.jpeg` |
+| anti | `IMG_7529.jpeg` |
+| owner | `IMG_7526.jpeg` |
 
 ---
 
 <p align="center">
-  <img src="assets/gallery/throne.jpg" width="200" alt=""/>
+  <img src="assets/gallery/IMG_7551.jpeg" width="200" alt=""/>
   &nbsp;
-  <img src="assets/gallery/roses.jpg" width="200" alt=""/>
+  <img src="assets/gallery/IMG_7527.jpeg" width="200" alt=""/>
   &nbsp;
-  <img src="assets/gallery/lilies.jpg" width="200" alt=""/>
+  <img src="assets/gallery/IMG_7526.jpeg" width="200" alt=""/>
 </p>
 
 ## Environment
@@ -158,7 +158,7 @@ data/                     runtime JSON stores
 MIT · Built for [Paradoxdreamer](https://github.com/Paradoxdreamer)
 
 <p align="center">
-  <img src="assets/gallery/conductor.jpg" width="280" alt=""/>
+  <img src="assets/gallery/IMG_7538.jpeg" width="280" alt=""/>
 </p>
 
 <p align="center">
