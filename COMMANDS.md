@@ -1,38 +1,103 @@
-# Command layout
+# ParadoxGPT — Command Reference
 
-Commands are organized by category folders under `src/commands/`.
-The loader walks **all subfolders** recursively and hot-reloads every ~5s.
+Prefix: `.` (configurable via `COMMAND_PREFIX`)
 
-```
-src/commands/
-├── ai/          ask, mode, roast
-├── anti/        antilink, warn, resetwarn
-├── auto/        welcome, leave, setwelcome, setleave, channel
-├── general/     ping, menu, profile, afk
-├── group/       kick, promote, demote, hidetag, tagall, groupinfo,
-│                setname, setdesc, linkgc
-├── media/       sticker, toimg, see, qr
-├── owner/       broadcast, ban, unban, listgc, join, leavegc
-└── tools/       search, news, weather, translate, remind, poll
-```
+## General
+| Command | Description |
+|---------|-------------|
+| `.menu` | Gothic menu carousel / category list |
+| `.menu text` | Full text menu |
+| `.ping` | Latency check |
+| `.profile [@user]` | User profile card |
+| `.afk [reason]` | Set AFK status |
 
-| Folder | Role |
-|--------|------|
-| `auto/` | Automation (welcome/leave messages, channel posts) |
-| `anti/` | Protection (antilink, warn system) |
-| `owner/` | Owner-only controls |
-| `group/` | Group admin tools |
-| `media/` | Stickers, QR, view-once |
-| `tools/` | Search, weather, translate, polls |
-| `ai/` | Gemini/Omega personality commands |
-| `general/` | Everyday utilities |
+## AI
+| Command | Description |
+|---------|-------------|
+| `.ask <text>` | Chat (Qwen → GPT-4-mini) |
+| `.mode normal\|chaotic` | Personality mode |
+| `.roast [@user\|text]` | Generate a roast |
 
-Add a new command by dropping a `.js` file in the right folder:
+## Fun
+| Command | Description |
+|---------|-------------|
+| `.truth` | Random truth question |
+| `.dare` | Random dare |
+| `.joke` | Random joke |
+| `.quote` | Inspirational quote |
+| `.emoji <key>` | Keyword → emoji |
+| `.ship @a @b` | Love calculator |
+| `.8ball <q>` | Magic 8-ball |
+| `.meme` | Random meme image |
+| `.waifu [cat]` | Anime SFW image |
+| `.tweet @user\|text` | Fake tweet card |
 
-```js
-module.exports = {
-  name: "mycommand",
-  // category is auto-inferred from folder name
-  async execute({ sock, m, args }) { ... }
-};
-```
+## Media
+| Command | Description |
+|---------|-------------|
+| `.song <name>` | Metadata + album art |
+| `.play <name>` | Full audio (`--ptt` for voice note) |
+| `.lyrics <name>` | Lyrics |
+| `.queue` | Download queue |
+| `.history` | Recent plays + taste |
+| `.ytmp3 <url\|q>` | YouTube audio |
+| `.ytmp4 <url\|q>` | YouTube video |
+| `.tiktok <url>` | TikTok download |
+| `.ig <url>` | Instagram download |
+| `.media <url>` | Direct media URL |
+| `.sticker` | Reply → sticker |
+| `.toimg` | Sticker → image |
+| `.see` | View-once breaker |
+| `.qr <text>` | QR code image |
+
+## Tools
+| Command | Description |
+|---------|-------------|
+| `.movie <title>` | OMDB movie card |
+| `.movie search <q>` | Keyword search |
+| `.series <title>` | TV series |
+| `.search <q>` | Web search |
+| `.news <topic>` | News links |
+| `.weather <city>` | Weather |
+| `.translate <lang> <text>` | Translate |
+| `.remind <time> <text>` | Reminder |
+| `.poll Q \| A \| B` | Create poll |
+
+## Group (admin)
+| Command | Description |
+|---------|-------------|
+| `.kick @user` | Remove member |
+| `.promote @user` | Make admin |
+| `.demote @user` | Remove admin |
+| `.hidetag <text>` | Silent mention all |
+| `.tagall [text]` | Mention all |
+| `.groupinfo` | Group details |
+| `.setname <n>` | Rename group |
+| `.setdesc <t>` | Set description |
+| `.linkgc` | Invite link |
+
+## Auto
+| Command | Description |
+|---------|-------------|
+| `.welcome on\|off` | Welcome messages |
+| `.leave on\|off` | Leave messages |
+| `.setwelcome <t>` | Custom welcome |
+| `.setleave <t>` | Custom leave |
+| `.channel set\|post\|list` | Channel autopost |
+
+## Anti
+| Command | Description |
+|---------|-------------|
+| `.antilink on\|off` | Delete links |
+| `.warn @user` | Warn member |
+| `.resetwarn @user` | Clear warns |
+
+## Owner
+| Command | Description |
+|---------|-------------|
+| `.broadcast <text>` | All groups |
+| `.ban` / `.unban` | Ban controls |
+| `.listgc` | List groups |
+| `.join <link>` | Join group |
+| `.leavegc` | Leave current |
+| `.setmenu …` | Edit bot identity / menu |
