@@ -24,6 +24,10 @@ const config = {
     clientId: process.env.SPOTIFY_CLIENT_ID || "",
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET || "",
   },
+  aiApiUrl:
+    process.env.AI_API_URL ||
+    process.env.OMEGA_PRIMARY_URL ||
+    "https://omegatech-api.dixonomega.tech",
 };
 
 module.exports = config;

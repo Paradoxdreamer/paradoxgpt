@@ -1,7 +1,7 @@
 {
   "name": "paradoxgpt",
   "version": "2.0.0",
-  "description": "ParadoxGPT — A personality-driven WhatsApp AI bot with web-based pairing codes.",
+  "description": "ParadoxGPT — A personality-driven WhatsApp AI bot with web-based pairing codes. Built with Baileys + Gemini.",
   "main": "src/index.js",
   "type": "commonjs",
   "scripts": {
@@ -9,8 +9,16 @@
     "dev": "nodemon src/index.js",
     "web": "node src/index.js"
   },
-  "keywords": ["whatsapp", "baileys", "bot", "paradoxgpt", "ai", "pairing-code"],
-  "author": "Paradox Dreamer",
+  "keywords": [
+    "whatsapp",
+    "baileys",
+    "bot",
+    "paradoxgpt",
+    "gemini",
+    "ai",
+    "pairing-code"
+  ],
+  "author": "Paradox Dreamer (rebuilt)",
   "license": "MIT",
   "dependencies": {
     "@hapi/boom": "^10.0.1",
