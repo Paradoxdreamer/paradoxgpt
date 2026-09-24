@@ -3,6 +3,7 @@ const fs = require("fs-extra");
 const { serialize } = require("./serializer");
 const config = require("../config");
 const { askGemini } = require("../ai/omega");
+const settings = require("../lib/botSettings");
 
 const cooldowns = new Map();
 const spamCounter = new Map();
@@ -68,9 +69,7 @@ async function loadCommands() {
 }
 
 function isOwner(jid) {
-  if (!config.ownerNumber) return false;
-  const num = jid.replace(/\D/g, "");
-  return num.endsWith(config.ownerNumber) || num === config.ownerNumber;
+  return settings.isOwner(jid);
 }
 
 function isTempBanned(sender) {
@@ -83,17 +82,47 @@ function isTempBanned(sender) {
   return true;
 }
 
+function isChatTrigger(m, sock) {
+  const body = (m.body || "").trim();
+  if (!body) return false;
+
+  const botId = sock.user?.id?.split(":")[0] || "";
+  const botNum = botId.replace(/\D/g, "");
+
+  if (m.mentionedJid?.some((j) => j.includes(botId) || j.replace(/\D/g, "").endsWith(botNum))) {
+    return true;
+  }
+  if (botNum && body.replace(/\D/g, "").includes(botNum)) return true;
+  if (/\bparadoxgpt\b/i.test(body) || /\bparadox\b/i.test(body)) return true;
+  if (body.endsWith("?") && body.length > 3 && body.length < 200) return true;
+  return false;
+}
+
+function stripTriggerNoise(text) {
+  return (
+    text
+      .replace(/@\d+/g, "")
+      .replace(/\bparadoxgpt\b/gi, "")
+      .replace(/\bparadox\b/gi, "")
+      .trim() || text
+  );
+}
+
 async function handleMessage(sock, rawMsg) {
   const m = serialize(rawMsg, sock);
   if (!m) return;
 
   if ((await isPermanentlyBanned(m.sender)) || isTempBanned(m.sender)) return;
 
+  if (isOwner(m.sender) && m.body && !m.command) {
+    try {
+      if (await settings.isAutoMode()) await settings.pushStyleSample(m.body);
+    } catch (_) {}
+  }
+
   try {
     const afk = require("../commands/general/afk");
-    if (typeof afk.checkAfkMention === "function") {
-      await afk.checkAfkMention(sock, m);
-    }
+    if (typeof afk.checkAfkMention === "function") await afk.checkAfkMention(sock, m);
   } catch (_) {}
 
   const now = Date.now();
@@ -112,6 +141,12 @@ async function handleMessage(sock, rawMsg) {
   }
   cooldowns.set(m.sender, now);
   spamCounter.set(m.sender, 0);
+
+  const allowed = await settings.canUseBot(m.sender, sock);
+  if (!allowed) {
+    if (m.command) await m.reply("🔒 Bot is in *private* mode. Only owners can use it.");
+    return;
+  }
 
   if (m.isGroup && m.body) {
     try {
@@ -133,15 +168,12 @@ async function handleMessage(sock, rawMsg) {
 
   if (m.command && commands[m.command]) {
     const cmd = commands[m.command];
-
     if (cmd.ownerOnly && !isOwner(m.sender)) {
       return m.reply("🚫 Only the Paradox Master can use this.");
     }
-
     if (cmd.groupOnly && !m.isGroup) {
       return m.reply("This command only works in groups.");
     }
-
     try {
       await cmd.execute({
         sock,
@@ -157,13 +189,10 @@ async function handleMessage(sock, rawMsg) {
     return;
   }
 
-  const mentionedBot = m.mentionedJid?.some((j) =>
-    j.includes(sock.user?.id?.split(":")[0])
-  );
-  const isQuestion = m.body.trim().endsWith("?");
-
-  if ((mentionedBot || isQuestion) && m.body.length > 2) {
-    const reply = await askGemini(m.body);
+  if (!m.command && isChatTrigger(m, sock) && (m.body || "").length > 1) {
+    const prompt = stripTriggerNoise(m.body);
+    const style = await settings.getStylePrompt();
+    const reply = await askGemini(prompt, style ? { systemOverride: style } : {});
     await m.reply(reply);
   }
 }
