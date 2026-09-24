@@ -1,40 +1,37 @@
-# Gallery — upload & rename guide
+# Gallery
 
-Upload images into this folder (`assets/gallery/`) on GitHub, then rename them to match the names below.
+## Active mapping (uploaded files)
 
-## Expected filenames
+| File | Role |
+|------|------|
+| `IMG_7776.jpeg` | **Hero / AI** — solar figure |
+| `IMG_7554.jpeg` | **General** — portrait |
+| `IMG_7538.jpeg` | **Tools** — papers / coat |
+| `IMG_7528.jpeg` | **Media** — The Fool |
+| `IMG_7551.jpeg` | **Group** — throne |
+| `IMG_7527.jpeg` | **Auto** — roses |
+| `IMG_7529.jpeg` | **Anti** — hood |
+| `IMG_7526.jpeg` | **Owner** — veil |
+| `IMG_7558.jpeg` | Extra — rain |
+| `IMG_7541.jpeg` | Extra — oni |
+| `IMG_7548.jpeg` | Extra — warrior |
 
-| Target name        | Used for                          |
-|--------------------|-----------------------------------|
-| `solar.jpg`        | Hero / default bot pic / **ai**   |
-| `portrait.jpg`     | **general** category              |
-| `conductor.jpg`    | **tools** category                |
-| `wings.jpg`        | **media** category                |
-| `throne.jpg`       | **group** category                |
-| `roses.jpg`        | **auto** category                 |
-| `hood.jpg`         | **anti** category                 |
-| `lilies.jpg`       | **owner** category                |
-| `rain.jpg`         | Extra (optional custom)           |
+## Optional pretty names
 
-## Original → target (if you still have the phone exports)
+If you rename on GitHub (or locally), use:
 
-| Original export   | Rename to         |
-|-------------------|-------------------|
-| `IMG_7776.jpg`    | `solar.jpg`       |
-| `IMG_7554.jpg`    | `portrait.jpg`    |
-| `IMG_7536.jpg`    | `conductor.jpg`   |
-| `IMG_7539.jpg`    | `wings.jpg`       |
-| `IMG_7551.jpg`    | `throne.jpg`      |
-| `IMG_7527.jpg`    | `roses.jpg`       |
-| `IMG_7529.jpg`    | `hood.jpg`        |
-| `IMG_7523.jpg`    | `lilies.jpg`      |
-| `IMG_7558.jpg`    | `rain.jpg`        |
+| Current | Pretty name |
+|---------|-------------|
+| `IMG_7776.jpeg` | `solar.jpg` |
+| `IMG_7554.jpeg` | `portrait.jpg` |
+| `IMG_7538.jpeg` | `conductor.jpg` |
+| `IMG_7528.jpeg` | `wings.jpg` |
+| `IMG_7551.jpeg` | `throne.jpg` |
+| `IMG_7527.jpeg` | `roses.jpg` |
+| `IMG_7529.jpeg` | `hood.jpg` |
+| `IMG_7526.jpeg` | `lilies.jpg` |
+| `IMG_7558.jpeg` | `rain.jpg` |
+| `IMG_7541.jpeg` | `oni.jpg` |
+| `IMG_7548.jpeg` | `warrior.jpg` |
 
-## After upload
-
-1. Confirm files live at `assets/gallery/<name>.jpg`
-2. Category map is in `data/categoryImages.json`
-3. Default bot pic is in `data/menuSettings.json` → `botPicUrl`
-4. Or set live with: `.setmenu pic assets/gallery/solar.jpg`
-
-Supported formats: `.jpg` · `.jpeg` · `.png` · `.webp`
+Then update `data/categoryImages.json` and `data/menuSettings.json` (or use `.setmenu`).
