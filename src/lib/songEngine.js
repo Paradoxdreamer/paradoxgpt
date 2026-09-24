@@ -19,7 +19,7 @@ let ytdlpOk = null;
     console.log("[SONG] yt-dlp detected");
   } catch {
     ytdlpOk = false;
-    console.warn("[SONG] yt-dlp not installed — pip install yt-dlp");
+    console.warn("[SONG] yt-dlp not installed — .play audio disabled. pip install yt-dlp");
   }
 })();
 
@@ -41,8 +41,8 @@ const lyricsCache = new Map();
 const CACHE_TTL = 30 * 60 * 1000;
 const CACHE_MAX = 300;
 const searchCooldowns = new Map();
-const downloadCooldowns = new Map();
 const SEARCH_CD_MS = 5000;
+const downloadCooldowns = new Map();
 const DOWNLOAD_CD_MS = 10000;
 
 function isSearchOnCooldown(userId) {
@@ -96,14 +96,17 @@ async function getSpotifyToken() {
   const { clientId, clientSecret } = config.spotify || {};
   if (!clientId || !clientSecret) return null;
   try {
-    const body = new URLSearchParams({ grant_type: "client_credentials" });
-    const { data } = await axios.post("https://accounts.spotify.com/api/token", body.toString(), {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
-      },
-      timeout: 8000,
-    });
+    const { data } = await axios.post(
+      "https://accounts.spotify.com/api/token",
+      "grant_type=client_credentials",
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
+        },
+        timeout: 8000,
+      }
+    );
     spotifyToken = data.access_token;
     spotifyTokenExp = Date.now() + (data.expires_in - 60) * 1000;
     return spotifyToken;
@@ -117,9 +120,10 @@ async function searchSpotifyMulti(query, limit = 5) {
   const token = await getSpotifyToken();
   if (!token) return [];
   try {
-    const { data } = await safeGet(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const { data } = await axios.get(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}`,
+      { headers: { Authorization: `Bearer ${token}` }, timeout: 8000 }
+    );
     return (data.tracks?.items || []).map((t) => ({
       name: t.name,
       artist: t.artists?.map((a) => a.name).join(", ") || "Unknown",
@@ -140,7 +144,9 @@ async function searchSpotifyMulti(query, limit = 5) {
 
 async function searchItunesMulti(query, limit = 5) {
   try {
-    const { data } = await safeGet(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=${limit}`);
+    const { data } = await safeGet(
+      `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=${limit}`
+    );
     return (data.results || []).map((it) => ({
       name: it.trackName || "Unknown",
       artist: it.artistName || "Unknown",
@@ -163,6 +169,7 @@ const REMIX_PATTERNS = /\b(remix|rmx|bootleg|flip|edit|mashup|rework)\b/i;
 const LIVE_PATTERNS = /\b(live|concert|tour|at\s|session|unplugged|acoustic)\b/i;
 const COVER_PATTERNS = /\b(cover|tribute|karaoke|instrumental|in the style)\b/i;
 const OFFICIAL_PATTERNS = /\b(official\s?(audio|video|music\svideo|mv|lyric))\b/i;
+const CONFIDENCE_THRESHOLD = 55;
 
 function scoreTrack(track, rawQuery, normalizedQuery) {
   const name = track.name.toLowerCase();
@@ -182,11 +189,15 @@ function scoreTrack(track, rawQuery, normalizedQuery) {
     if (artistWords.some((w) => qRaw.includes(w))) score += 15;
   }
   if (track.popularity) score += track.popularity * 0.08;
-  if (REMIX_PATTERNS.test(name) && !REMIX_PATTERNS.test(qRaw)) score -= 40;
-  if (LIVE_PATTERNS.test(name) && !LIVE_PATTERNS.test(qRaw)) score -= 35;
-  if (COVER_PATTERNS.test(name) && !COVER_PATTERNS.test(qRaw)) score -= 50;
-  if (OFFICIAL_PATTERNS.test(qRaw) && OFFICIAL_PATTERNS.test(name)) score += 20;
-  if (!/[(\[\-]/.test(track.name)) score += 10;
+  const wantsRemix = REMIX_PATTERNS.test(qRaw);
+  const wantsLive = LIVE_PATTERNS.test(qRaw);
+  const wantsCover = COVER_PATTERNS.test(qRaw);
+  const wantsOfficial = OFFICIAL_PATTERNS.test(qRaw);
+  if (REMIX_PATTERNS.test(name) && !wantsRemix) score -= 40;
+  if (LIVE_PATTERNS.test(name) && !wantsLive) score -= 35;
+  if (COVER_PATTERNS.test(name) && !wantsCover) score -= 50;
+  if (wantsOfficial && OFFICIAL_PATTERNS.test(name)) score += 20;
+  if (!/[\(\[\-]/.test(track.name)) score += 10;
   return Math.max(0, score);
 }
 
@@ -194,8 +205,6 @@ function rankTracks(tracks, rawQuery) {
   const normQ = normalizeCacheKey(rawQuery);
   return tracks.map((t) => ({ track: t, score: scoreTrack(t, rawQuery, normQ) })).sort((a, b) => b.score - a.score);
 }
-
-const CONFIDENCE_THRESHOLD = 55;
 
 function durationToMs(str) {
   if (!str) return 0;
@@ -209,11 +218,13 @@ async function searchYouTube(query) {
   if (!ytsr) return null;
   try {
     const results = await ytsr(query, { limit: 10 });
-    const video = results.items.find((v) => v.type === "video" && !v.isLive && v.duration && durationToMs(v.duration) <= 10 * 60 * 1000);
+    const video = results.items.find(
+      (v) => v.type === "video" && !v.isLive && v.duration && durationToMs(v.duration) <= 10 * 60 * 1000
+    );
     if (!video) return null;
     return { id: video.id, title: video.title, url: video.url, duration: video.duration, channel: video.author?.name || "Unknown" };
   } catch (e) {
-    console.warn("[SONG] YT:", e.message);
+    console.warn("[SONG] YouTube:", e.message);
     return null;
   }
 }
@@ -273,7 +284,13 @@ function shell(cmd, timeoutMs = 90000) {
 async function downloadAudio(youtubeUrl) {
   const outBase = tmpFile("out");
   const mp3Path = `${outBase}.mp3`;
-  const cmd = ["yt-dlp", `"${youtubeUrl}"`, "-x", "--audio-format mp3", "--audio-quality 5", '--match-filter "duration < 600"', `--output "${outBase}.%(ext)s"`, "--no-playlist", "--quiet", "--no-warnings"].join(" ");
+  const cmd = [
+    "yt-dlp", `"${youtubeUrl}"`,
+    "-x", "--audio-format mp3", "--audio-quality 5",
+    '--match-filter "duration < 600"',
+    `--output "${outBase}.%(ext)s"`,
+    "--no-playlist", "--quiet", "--no-warnings",
+  ].join(" ");
   await shell(cmd, 90000);
   if (!fs.existsSync(mp3Path)) throw new Error("Audio file not created");
   const { size } = fs.statSync(mp3Path);
@@ -413,6 +430,129 @@ async function sendAudioDownload(sock, m, track, video, userId, ptt = false) {
   }
 }
 
+function getTimeContext() {
+  const h = new Date().getHours();
+  if (h >= 0 && h < 5) return { label: "late night", mood: "dark, atmospheric, or calming" };
+  if (h >= 5 && h < 9) return { label: "early morning", mood: "gentle, uplifting or motivating" };
+  if (h >= 9 && h < 12) return { label: "morning", mood: "upbeat and energetic" };
+  if (h >= 12 && h < 17) return { label: "afternoon", mood: "mid-energy, focused or chill" };
+  if (h >= 17 && h < 21) return { label: "evening", mood: "smooth, R&B, or wind-down" };
+  return { label: "night", mood: "vibey, deep, or introspective" };
+}
+
+async function getAISuggestion(userId, userName, count = 3) {
+  const profile = getProfile(userId);
+  const time = getTimeContext();
+  if (profile.plays.length < 3) return null;
+
+  const topGenres = Object.entries(profile.genreFreq).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([g]) => g);
+  const topArtists = Object.entries(profile.artistFreq).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([a]) => a);
+  const recent = profile.plays[0];
+
+  const systemPrompt =
+    `You are ParadoxGPT, a sharp music recommendation engine. ` +
+    `Respond ONLY with a valid JSON array of exactly ${count} objects. ` +
+    `No markdown, no explanation. Format: [{"name":"...","artist":"...","reason":"..."}]`;
+
+  const question =
+    `User "${userName}" listens to: ${topArtists.join(", ") || "various"}. ` +
+    `Top genres: ${topGenres.join(", ") || "unknown"}. ` +
+    `Last played: "${recent.name}" by ${recent.artist}. ` +
+    `Time: ${time.label} — suggest ${time.mood} music. ` +
+    `Give ${count} songs they would love right now.`;
+
+  const base = (config.aiApiUrl || config.omegaPrimaryUrl || "https://omegatech-api.dixonomega.tech").replace(/\/api\/ai\/.*$/, "");
+  const endpoints = [
+    `${base}/api/ai/Qwen-Claude-Haiku?message=${encodeURIComponent(question + "\n\n" + systemPrompt)}&model=qwen`,
+    `${base}/api/ai/Gpt-4-mini?message=${encodeURIComponent(question + "\n\n" + systemPrompt)}`,
+  ];
+
+  for (const url of endpoints) {
+    try {
+      const { data } = await axios.get(url, { timeout: 15000 });
+      const text = (data.results || data.response || data.message || data.text || "").trim();
+      if (!text) continue;
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      if (!jsonMatch) continue;
+      let suggestions;
+      try { suggestions = JSON.parse(jsonMatch[0]); } catch { continue; }
+      if (!Array.isArray(suggestions) || !suggestions.length) continue;
+      return { suggestions: suggestions.slice(0, count), time, topArtists, topGenres };
+    } catch (e) {
+      console.warn("[SONG] AI suggestion failed:", e.message);
+    }
+  }
+  return null;
+}
+
+async function runAutoDJ(sock, m, userId, userName, ptt = false) {
+  await m.reply(`🎧 *Auto DJ Mode*\n\n_Reading your taste… building the queue…_`);
+
+  const suggestion = await getAISuggestion(userId, userName, 5);
+  if (!suggestion) {
+    return m.reply(
+      `_Auto DJ needs at least 3 plays to understand your taste._\n` +
+        `_Use .play <song name> a few times first._`
+    );
+  }
+
+  const { suggestions, time } = suggestion;
+  await m.reply(
+    `🎵 *Auto DJ — ${time.label} mix*\n\n` +
+      suggestions.map((s, i) => `${i + 1}. *${s.name}* — ${s.artist}\n   _${s.reason || ""}_`).join("\n\n") +
+      `\n\n_Resolving and downloading…_`
+  );
+
+  let played = 0;
+  let failed = 0;
+
+  for (const s of suggestions) {
+    try {
+      const resolved = await resolveTrack(`${s.name} ${s.artist}`);
+      if (!resolved) { failed++; continue; }
+      const { track } = resolved;
+      const video = await resolveVideo(track);
+      if (!video) { failed++; continue; }
+
+      recordPlay(userId, track);
+      await m.reply(`▶️ *Now playing:* ${track.name} — ${track.artist}`);
+
+      if (!ytdlpOk) {
+        await m.reply(`🔗 ${video.url}`);
+        played++;
+        continue;
+      }
+
+      let audioPath = null;
+      try {
+        audioPath = await downloadAudio(video.url);
+        await sock.sendMessage(
+          m.chat,
+          { audio: fs.readFileSync(audioPath), mimetype: "audio/mpeg", ptt },
+          { quoted: m.raw }
+        );
+        played++;
+      } catch (e) {
+        console.warn("[AUTODJ]", track.name, e.message);
+        await m.reply(`⚠️ Skipped *${track.name}*\n🔗 ${video.url}`);
+        failed++;
+      } finally {
+        if (audioPath) cleanup(audioPath);
+      }
+      await new Promise((r) => setTimeout(r, 1200));
+    } catch (e) {
+      console.warn("[AUTODJ] track error:", e.message);
+      failed++;
+    }
+  }
+
+  await m.reply(
+    `🎧 *Auto DJ done*\n\n✅ Played: ${played}` +
+      (failed ? `\n⚠️ Skipped: ${failed}` : "") +
+      `\n\n_Use .play --auto again for a new set._`
+  );
+}
+
 setInterval(() => {
   const now = Date.now();
   for (const map of [metaCache, ytCache, lyricsCache]) {
@@ -442,4 +582,7 @@ module.exports = {
   MAX_CONCURRENT,
   SEARCH_CD_MS,
   ytdlpOk: () => ytdlpOk,
+  getAISuggestion,
+  runAutoDJ,
+  getTimeContext,
 };
