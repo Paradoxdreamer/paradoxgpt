@@ -1,60 +1,34 @@
-const axios = require("axios");
+const engine = require("../../lib/songEngine");
 
 module.exports = {
   name: "play",
   category: "media",
-  description: "Download YouTube audio by query or URL",
+  description: "Download full song audio",
   async execute({ sock, m, args }) {
-    const q = args.join(" ").trim();
-    if (!q) return m.reply("Usage: `.play never gonna give you up` or `.play <youtube-url>`");
+    const flags = args.filter((a) => a.startsWith("--"));
+    const cleanArgs = args.filter((a) => !a.startsWith("--"));
+    const ptt = flags.includes("--ptt");
+    const query = cleanArgs.join(" ").trim();
+    const userId = m.sender.replace("@s.whatsapp.net", "");
 
-    await m.reply("Searching YouTube…");
-
-    try {
-      const { data } = await axios.get("https://api.siputzx.my.id/api/d/ytmp3", {
-        params: q.includes("http") ? { url: q } : { query: q },
-        timeout: 60000,
-        validateStatus: () => true,
-      });
-
-      let result = data?.data || data?.result || data;
-      if (!result?.url && !result?.download && !result?.dl) {
-        const search = await axios.get("https://api.siputzx.my.id/api/s/youtube", {
-          params: { query: q },
-          timeout: 30000,
-          validateStatus: () => true,
-        });
-        const first = search.data?.data?.[0] || search.data?.result?.[0];
-        if (!first?.url && !first?.link) {
-          return m.reply("No results. Try a clearer query or a direct YouTube URL.");
-        }
-        const ytUrl = first.url || first.link;
-        const dl = await axios.get("https://api.siputzx.my.id/api/d/ytmp3", {
-          params: { url: ytUrl },
-          timeout: 60000,
-          validateStatus: () => true,
-        });
-        result = dl.data?.data || dl.data?.result || dl.data;
-      }
-
-      const audioUrl = result?.url || result?.download || result?.dl;
-      const title = result?.title || q;
-      if (!audioUrl) return m.reply("Couldn't get a download link. Try again later.");
-
-      await sock.sendMessage(
-        m.chat,
-        {
-          audio: { url: audioUrl },
-          mimetype: "audio/mpeg",
-          fileName: `${String(title).slice(0, 60)}.mp3`,
-          ptt: false,
-        },
-        { quoted: m.raw }
+    if (!query) {
+      return m.reply(
+        `🎵 *Play*\n\n*.play <song>* — full audio\n*.play <song> --ptt* — as voice note\n*.song <song>* — info only\n*.lyrics <song>* — lyrics`
       );
-      await m.reply(`*${title}*`);
-    } catch (err) {
-      console.error("play error:", err.message);
-      await m.reply("Download failed. Try `.ytmp4` or retry later.");
     }
+
+    if (engine.isSearchOnCooldown(userId)) {
+      return m.reply(`_Easy. Wait ${engine.SEARCH_CD_MS / 1000}s between searches._`);
+    }
+
+    await m.reply("🔍 Finding track…");
+    const resolved = await engine.resolveTrack(query);
+    if (!resolved) return m.reply(`❌ Nothing for *"${query}"*`);
+
+    const { track } = resolved;
+    engine.recordPlay(userId, track);
+    const video = await engine.resolveVideo(track);
+    await engine.sendCard(sock, m, track, video, "play");
+    await engine.sendAudioDownload(sock, m, track, video, userId, ptt);
   },
 };
