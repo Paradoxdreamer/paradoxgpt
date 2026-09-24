@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/gallery/IMG_7776.jpeg" width="420" alt="ParadoxGPT"/>
+  <img src="assets/gallery/IMG_7776.jpeg" width="480" alt="ParadoxGPT"/>
 </p>
 
 <h1 align="center">ParadoxGPT</h1>
@@ -16,33 +16,43 @@
 </p>
 
 <p align="center">
-  Personality-driven WhatsApp bot · Web pairing codes · Modular commands · Gothic menu
+  Personality-driven WhatsApp bot · Web pairing · Modular commands · Media downloaders · Gothic menu
+</p>
+
+---
+
+<p align="center">
+  <img src="assets/gallery/IMG_7554.jpeg" width="140" alt=""/>
+  <img src="assets/gallery/IMG_7529.jpeg" width="140" alt=""/>
+  <img src="assets/gallery/IMG_7528.jpeg" width="140" alt=""/>
+  <img src="assets/gallery/IMG_7538.jpeg" width="140" alt=""/>
+</p>
+<p align="center">
+  <img src="assets/gallery/IMG_7551.jpeg" width="140" alt=""/>
+  <img src="assets/gallery/IMG_7527.jpeg" width="140" alt=""/>
+  <img src="assets/gallery/IMG_7526.jpeg" width="140" alt=""/>
+  <img src="assets/gallery/IMG_7558.jpeg" width="140" alt=""/>
+</p>
+<p align="center">
+  <img src="assets/gallery/IMG_7541.jpeg" width="140" alt=""/>
+  <img src="assets/gallery/IMG_7548.jpeg" width="140" alt=""/>
+  <img src="assets/gallery/IMG_7776.jpeg" width="140" alt=""/>
 </p>
 
 ---
 
 ## Overview
 
-ParadoxGPT is a rebuilt, production-minded WhatsApp bot:
-
 | Feature | Detail |
 |--------|--------|
 | **Pairing** | Web dashboard pairing codes (no QR required) |
 | **AI** | OmegaTech Qwen primary → GPT-4-mini fallback |
-| **Commands** | Category folders: `ai` `anti` `auto` `general` `group` `media` `owner` `tools` |
+| **Downloaders** | YouTube (play / mp3 / mp4), TikTok, Instagram, generic media |
+| **Commands** | Category folders with hot-reload |
 | **Menu** | Image carousel, gothic footer, editable bio / handles / channel |
-| **Hot-reload** | Drop a `.js` in a category folder — live in ~5s |
-| **Docker** | `Dockerfile` + `docker-compose.yml` included |
+| **Docker** | `Dockerfile` + `docker-compose.yml` |
 
 ---
-
-<p align="center">
-  <img src="assets/gallery/IMG_7554.jpeg" width="180" alt=""/>
-  &nbsp;
-  <img src="assets/gallery/IMG_7529.jpeg" width="180" alt=""/>
-  &nbsp;
-  <img src="assets/gallery/IMG_7528.jpeg" width="180" alt=""/>
-</p>
 
 ## Quick start
 
@@ -55,9 +65,7 @@ npm install
 npm start
 ```
 
-Open **http://localhost:3000** → enter your number → get the **8-digit pairing code** → WhatsApp → Linked devices → Link with phone number.
-
-### Docker
+Open **http://localhost:3000** → enter your number → **8-digit pairing code** → WhatsApp → Linked devices → Link with phone number.
 
 ```bash
 docker compose up -d --build
@@ -65,27 +73,123 @@ docker compose up -d --build
 
 ---
 
-## Command map
+## Download commands
 
+Prefix defaults to `.`
+
+| Command | Usage | Description |
+|---------|--------|-------------|
+| `.play` | `.play never gonna give you up` | Search YouTube → send MP3 |
+| `.play` | `.play <youtube-url>` | YouTube URL → MP3 |
+| `.ytmp3` | `.ytmp3 https://youtube.com/watch?v=...` | YouTube → MP3 |
+| `.ytmp4` | `.ytmp4 https://youtube.com/watch?v=...` | YouTube → MP4 video |
+| `.tiktok` | `.tiktok https://www.tiktok.com/@user/video/...` | TikTok video (no watermark when available) |
+| `.ig` | `.ig https://www.instagram.com/p/...` | Instagram post / reel (photo or video) |
+| `.media` | `.media <url>` | Direct image/video/audio URL, or hints for social |
+| `.sticker` | reply to image/video | Convert media to sticker |
+| `.toimg` | reply to sticker | Sticker → image |
+| `.see` | reply to view-once | Reveal view-once image/video |
+| `.qr` | `.qr text here` | Generate QR code image |
+
+### Examples
+
+```text
+.play lo-fi hip hop radio
+.ytmp3 https://youtu.be/dQw4w9WgXcQ
+.ytmp4 https://www.youtube.com/watch?v=dQw4w9WgXcQ
+.tiktok https://www.tiktok.com/@user/video/1234567890
+.ig https://www.instagram.com/reel/XXXX/
+.media https://example.com/clip.mp4
 ```
-src/commands/
-├── ai/        ask · mode · roast
-├── anti/      antilink · warn · resetwarn
-├── auto/      welcome · leave · channel · setwelcome · setleave
-├── general/   menu · ping · profile · afk
-├── group/     kick · promote · demote · hidetag · tagall · groupinfo …
-├── media/     sticker · toimg · see · qr
-├── owner/     broadcast · ban · unban · setmenu · listgc · join …
-└── tools/     search · news · weather · translate · remind · poll
-```
+
+> Download APIs are third-party and can go down or rate-limit. If one fails, retry later or use another command.
+
+---
+
+## Full command list
+
+### AI
+| Command | Description |
+|---------|-------------|
+| `.ask <text>` | Chat with OmegaTech AI (Qwen → GPT-4-mini) |
+| `.mode normal\|chaotic` | Switch AI personality |
+| `.roast [@user\|text]` | Generate a roast |
+
+### Media & download
+| Command | Description |
+|---------|-------------|
+| `.play` | YouTube search / audio download |
+| `.ytmp3` | YouTube → MP3 |
+| `.ytmp4` | YouTube → MP4 |
+| `.tiktok` | TikTok download |
+| `.ig` | Instagram download |
+| `.media` | Generic / direct media URL |
+| `.sticker` | Image/video → sticker |
+| `.toimg` | Sticker → image |
+| `.see` | Break view-once |
+| `.qr` | Text → QR image |
+
+### Tools
+| Command | Description |
+|---------|-------------|
+| `.search <query>` | Web search |
+| `.news <topic>` | News / related topics |
+| `.weather <city>` | Weather |
+| `.translate <lang> <text>` | Translate |
+| `.remind <time> <text>` | Reminder |
+| `.poll Q \| A \| B` | Create poll |
+
+### General
+| Command | Description |
+|---------|-------------|
+| `.menu` | Cool menu (carousel / image + gothic footer) |
+| `.menu text` | Full text command list |
+| `.ping` | Latency check |
+| `.profile` | XP / level profile |
+| `.afk [reason]` | AFK status |
+
+### Group
+| Command | Description |
+|---------|-------------|
+| `.kick @user` | Remove member |
+| `.promote @user` | Make admin |
+| `.demote @user` | Remove admin |
+| `.hidetag <text>` | Mention all (hidden) |
+| `.tagall <text>` | Tag everyone |
+| `.groupinfo` | Group details |
+| `.setname <name>` | Rename group |
+| `.setdesc <text>` | Set description |
+| `.linkgc` | Invite link |
+
+### Auto
+| Command | Description |
+|---------|-------------|
+| `.welcome on\|off` | Toggle welcome |
+| `.leave on\|off` | Toggle leave |
+| `.setwelcome <text>` | Custom welcome |
+| `.setleave <text>` | Custom leave |
+| `.channel set\|post\|list\|autopost` | Channel posts |
+
+### Anti
+| Command | Description |
+|---------|-------------|
+| `.antilink on\|off` | Block invite links |
+| `.warn @user` | Warn member |
+| `.resetwarn @user` | Clear warns |
+
+### Owner
+| Command | Description |
+|---------|-------------|
+| `.broadcast <text>` | Message all groups |
+| `.ban` / `.unban` | Ban controls |
+| `.listgc` | List groups |
+| `.join <link>` | Join group |
+| `.leavegc` | Leave current group |
+| `.setmenu …` | Edit menu name/bio/pic/handles/channel |
 
 ---
 
 ## Cool menu
-
-`.menu` sends a **carousel** (category art + buttons) or a full image caption with gothic footer.
-
-Customize without editing code:
 
 ```text
 .setmenu name ParadoxGPT
@@ -97,10 +201,10 @@ Customize without editing code:
 .setmenu show
 ```
 
-### Gallery → category map
+### Gallery → category
 
-| Category | File |
-|----------|------|
+| Category | Image |
+|----------|-------|
 | general | `IMG_7554.jpeg` |
 | ai | `IMG_7776.jpeg` |
 | tools | `IMG_7538.jpeg` |
@@ -109,15 +213,15 @@ Customize without editing code:
 | auto | `IMG_7527.jpeg` |
 | anti | `IMG_7529.jpeg` |
 | owner | `IMG_7526.jpeg` |
+| extra | `IMG_7558.jpeg` · `IMG_7541.jpeg` · `IMG_7548.jpeg` |
 
 ---
 
 <p align="center">
-  <img src="assets/gallery/IMG_7551.jpeg" width="200" alt=""/>
-  &nbsp;
-  <img src="assets/gallery/IMG_7527.jpeg" width="200" alt=""/>
-  &nbsp;
-  <img src="assets/gallery/IMG_7526.jpeg" width="200" alt=""/>
+  <img src="assets/gallery/IMG_7551.jpeg" width="160" alt=""/>
+  <img src="assets/gallery/IMG_7527.jpeg" width="160" alt=""/>
+  <img src="assets/gallery/IMG_7526.jpeg" width="160" alt=""/>
+  <img src="assets/gallery/IMG_7548.jpeg" width="160" alt=""/>
 </p>
 
 ## Environment
@@ -131,34 +235,41 @@ WEB_PORT=3000
 COMMAND_PREFIX=.
 ```
 
-No API key required for OmegaTech.
-
 ---
 
 ## Architecture
 
 ```
 src/
-├── index.js              entry
+├── index.js
 ├── config.js
-├── ai/omega.js           Qwen → GPT-4-mini → optional Gemini
+├── ai/omega.js
 ├── bot/                  connection · handler · serializer
-├── commands/             category modules
-├── lib/menuSettings.js   editable menu / handles / channel
-├── services/autopost.js
+├── commands/
+│   ├── ai/
+│   ├── anti/
+│   ├── auto/
+│   ├── general/
+│   ├── group/
+│   ├── media/            sticker · toimg · see · qr · play · ytmp3 · ytmp4 · tiktok · ig · media
+│   ├── owner/
+│   └── tools/
+├── lib/menuSettings.js
+├── services/
 └── web/                  pairing dashboard
-assets/gallery/           menu & README art
-data/                     runtime JSON stores
+assets/gallery/           full art set
+data/
 ```
 
 ---
 
 ## License
 
-MIT · Built for [Paradoxdreamer](https://github.com/Paradoxdreamer)
+MIT · [Paradoxdreamer](https://github.com/Paradoxdreamer)
 
 <p align="center">
-  <img src="assets/gallery/IMG_7538.jpeg" width="280" alt=""/>
+  <img src="assets/gallery/IMG_7538.jpeg" width="220" alt=""/>
+  <img src="assets/gallery/IMG_7541.jpeg" width="220" alt=""/>
 </p>
 
 <p align="center">
