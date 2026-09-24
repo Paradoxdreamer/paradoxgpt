@@ -3,17 +3,29 @@ const engine = require("../../lib/songEngine");
 module.exports = {
   name: "play",
   category: "media",
-  description: "Download full song audio",
+  description: "Download full song audio — .play <name> | --ptt | --auto",
   async execute({ sock, m, args }) {
     const flags = args.filter((a) => a.startsWith("--"));
     const cleanArgs = args.filter((a) => !a.startsWith("--"));
     const ptt = flags.includes("--ptt");
+    const autoDJ = flags.includes("--auto");
     const query = cleanArgs.join(" ").trim();
     const userId = m.sender.replace("@s.whatsapp.net", "");
+    const userName = m.pushName || "Wanderer";
+
+    if (autoDJ) {
+      return engine.runAutoDJ(sock, m, userId, userName, ptt);
+    }
 
     if (!query) {
       return m.reply(
-        `🎵 *Play*\n\n*.play <song>* — full audio\n*.play <song> --ptt* — as voice note\n*.song <song>* — info only\n*.lyrics <song>* — lyrics`
+        `🎵 *Play*\n\n` +
+          `*.play <song>* — full audio\n` +
+          `*.play <song> --ptt* — as voice note\n` +
+          `*.play --auto* — AI DJ mix (needs 3+ plays)\n` +
+          `*.song <song>* — info only\n` +
+          `*.lyrics <song>* — lyrics\n` +
+          `*.history* — your taste profile`
       );
     }
 
