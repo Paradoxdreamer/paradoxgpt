@@ -1,5 +1,6 @@
 /**
  * ParadoxGPT v2
+ * Clean architecture · Web pairing codes · Personality
  */
 const { startBot, getSocket } = require("./bot/connection");
 const { loadCommands, startHotReload } = require("./bot/handler");
@@ -8,7 +9,12 @@ const config = require("./config");
 const fs = require("fs-extra");
 
 async function main() {
-  console.log("ParadoxGPT v2.0 - Personality · Pairing · Gemini");
+  console.log(`
+╔══════════════════════════════════════╗
+║         ParadoxGPT v2.0              ║
+║   Personality · Pairing · AI         ║
+╚══════════════════════════════════════╝
+`);
 
   await fs.ensureDir(config.dataDir);
   await fs.ensureDir(config.sessionDir);
@@ -28,8 +34,8 @@ async function main() {
   }
 
   console.log(`Prefix: ${config.prefix}`);
-  console.log(`Owner : ${config.ownerNumber || "(not set)"}`);
-  console.log("Ready. Open the web dashboard to link WhatsApp with a pairing code.");
+  console.log(`Owners: ${config.lockedOwners.join(", ")} (locked)`);
+  console.log("Ready. Open the web dashboard to link WhatsApp with a pairing code.\n");
 }
 
 main().catch((err) => {

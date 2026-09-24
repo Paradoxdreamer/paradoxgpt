@@ -49,14 +49,17 @@ async function callOmega(baseUrl, userMessage, extraParams = {}) {
     headers: { "User-Agent": "ParadoxGPT/2.0" },
   });
   if (!data) throw new Error("Empty response");
-  const answer = data.answer || data.result || data.response || data.message || data.text || null;
-  if (!answer || typeof answer !== "string") throw new Error("No answer field in API response");
+  const answer =
+    data.answer || data.result || data.response || data.message || data.text || null;
+  if (!answer || typeof answer !== "string") {
+    throw new Error("No answer field in API response");
+  }
   return answer.trim();
 }
 
 async function askAI(userPrompt, options = {}) {
   const mode = options.mode || (await getMode());
-  const system = getSystemPrompt(mode);
+  const system = options.systemOverride || getSystemPrompt(mode);
   const fullMessage = `${system}\n\nUser: ${userPrompt}\n\nParadoxGPT:`;
 
   try {
@@ -75,8 +78,8 @@ async function askAI(userPrompt, options = {}) {
 
   if (config.geminiApiKey) {
     try {
-      const { askGemini: askG } = require("./gemini");
-      return await askG(userPrompt, { mode });
+      const { askGemini: g } = require("./gemini");
+      return await g(userPrompt, { mode });
     } catch (err) {
       console.error("Gemini tertiary failed:", err.message);
     }
