@@ -1,0 +1,6 @@
+{
+  "name": "paradoxgpt-dashboard",
+  "private": true,
+  "version": "1.0.0",
+  "description": "ParadoxGPT pairing dashboard (Vercel) — proxies to bot host"
+}
