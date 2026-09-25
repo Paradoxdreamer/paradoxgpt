@@ -1,9 +1,6 @@
 require("dotenv").config();
 const path = require("path");
 
-/**
- * HARD-LOCKED owners — cannot be changed via .env or runtime.
- */
 const LOCKED_OWNERS = Object.freeze(["2349130717272", "2348146417776"]);
 
 const config = {
@@ -30,6 +27,11 @@ const config = {
     clientId: process.env.SPOTIFY_CLIENT_ID || "",
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET || "",
   },
+  pairApiSecret: process.env.PAIR_API_SECRET || "",
+  corsOrigins: (process.env.CORS_ORIGINS || "*")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean),
   aiApiUrl:
     process.env.AI_API_URL ||
     process.env.OMEGA_PRIMARY_URL ||
