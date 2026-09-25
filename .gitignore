@@ -8,3 +8,5 @@ auth_info*
 baileys_store*
 .qr*
 tmp/
+dist/
+.vercel
