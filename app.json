@@ -1,0 +1,38 @@
+{
+  "name": "paradoxgpt",
+  "description": "ParadoxGPT WhatsApp bot — Baileys + pairing dashboard",
+  "repository": "https://github.com/Paradoxdreamer/paradoxgpt",
+  "keywords": ["whatsapp", "baileys", "bot", "nodejs"],
+  "env": {
+    "BOT_NAME": {
+      "description": "Display name",
+      "value": "ParadoxGPT"
+    },
+    "COMMAND_PREFIX": {
+      "value": "."
+    },
+    "PAIR_API_SECRET": {
+      "description": "Shared secret for pairing API (match Vercel PAIR_API_SECRET)",
+      "generator": "secret"
+    },
+    "CORS_ORIGINS": {
+      "description": "Your Vercel dashboard origin, e.g. https://xxx.vercel.app",
+      "value": "*"
+    },
+    "OMEGA_PRIMARY_URL": {
+      "value": "https://omegatech-api.dixonomega.tech/api/ai/Qwen-Claude-Haiku"
+    },
+    "OMEGA_FALLBACK_URL": {
+      "value": "https://omegatech-api.dixonomega.tech/api/ai/Gpt-4-mini"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "buildpacks": [
+    { "url": "heroku/nodejs" }
+  ]
+}

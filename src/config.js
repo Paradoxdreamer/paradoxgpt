@@ -15,7 +15,7 @@ const config = {
     process.env.OMEGA_FALLBACK_URL ||
     "https://omegatech-api.dixonomega.tech/api/ai/Gpt-4-mini",
   prefix: process.env.COMMAND_PREFIX || ".",
-  webPort: parseInt(process.env.WEB_PORT || "3000", 10),
+  webPort: parseInt(process.env.PORT || process.env.WEB_PORT || "3000", 10),
   webHost: process.env.WEB_HOST || "0.0.0.0",
   sessionDir: path.resolve(process.env.SESSION_DIR || "./data/session"),
   dataDir: path.resolve("./data"),
