@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParadoxGPT — Pairing Dashboard</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="container">
+    <header>
+      <div class="logo">Paradox<span>GPT</span></div>
+      <p class="tagline">Crafted from silence · Pairing Code Edition</p>
+    </header>
+
+    <section class="card status-card">
+      <h2>Bot Status</h2>
+      <div class="status-row">
+        <span id="statusBadge" class="badge disconnected">Checking…</span>
+        <p id="statusDetail" class="status-detail">Connecting to bot host…</p>
+      </div>
+    </section>
+
+    <section id="pairSection" class="card">
+      <h2>Get Pairing Code</h2>
+      <p class="hint">Enter the WhatsApp number that will run the bot (country code, no +).</p>
+      <form id="pairForm">
+        <label for="phone">Phone number</label>
+        <input id="phone" type="tel" placeholder="2348012345678" required autocomplete="tel" />
+        <button id="pairBtn" type="submit">Generate code</button>
+      </form>
+      <div id="errorBox" class="error hidden"></div>
+    </section>
+
+    <section id="codeBox" class="card code-card hidden">
+      <h2>Your code</h2>
+      <div id="pairingCode" class="code">········</div>
+      <p class="hint">WhatsApp → Linked devices → Link with phone number → enter this code.</p>
+    </section>
+
+    <section class="card">
+      <h2>Steps</h2>
+      <ol class="steps">
+        <li>Bot host must be <strong>online</strong> (status above).</li>
+        <li>Enter the bot account’s number and generate a code.</li>
+        <li>On the phone: WhatsApp → <em>Linked Devices</em>.</li>
+        <li>Choose <strong>Link with phone number instead</strong>.</li>
+        <li>Type the 8-character code. Bot connects — no QR.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>ParadoxGPT · Dashboard on Vercel · Bot host separate</span>
+    </footer>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
